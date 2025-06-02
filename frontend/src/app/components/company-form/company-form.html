@@ -1,0 +1,37 @@
+<div *ngIf="loading">Loading form...</div>
+
+<div  class="form-center-container">
+  <div class="form-wrapper">
+    <h2>Company Registration</h2>
+    <form *ngIf="!loading && companyForm" [formGroup]="companyForm" (ngSubmit)="onSubmit()" >
+      <ng-container *ngFor="let field of formFields">
+        <div *ngIf="!field.section" class="form-group mb-3">
+          <label>{{ field.fieldHeader }}</label>
+
+          <input *ngIf="isFileField(field)" type="file" class="form-control" (change)="onFileChange($event, field.fieldName)" />
+
+          <input *ngIf="!isFileField(field) && (field.fieldType === '1' || field.fieldType === '19')" type="text" class="form-control" [formControlName]="field.fieldName" [placeholder]="field.fieldHeader" />
+
+          <input *ngIf="!isFileField(field) && field.fieldType === '2'" type="number" class="form-control" [formControlName]="field.fieldName" [placeholder]="field.fieldHeader" />
+
+          <select *ngIf="!isFileField(field) && (field.fieldType === '3' || field.fieldType === '4')" class="form-control" [formControlName]="field.fieldName">
+            <option *ngFor="let option of field.options" [value]="option">{{ option }}</option>
+          </select>
+
+          <div *ngIf="companyForm.get(field.fieldName)?.invalid && companyForm.get(field.fieldName)?.touched" class="text-danger">
+            {{ field.fieldHeader }} is required.
+          </div>
+        </div>
+      </ng-container>
+
+
+
+
+
+      <button class="btn btn-primary" type="submit" [disabled]="companyForm.invalid">Submit</button>
+    </form>
+  </div>
+</div>
+
+
+<div *ngIf="message" class="mt-3 alert alert-info">{{ message }}</div>
